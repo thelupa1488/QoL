@@ -33,9 +33,10 @@ namespace QoL
             Modules.Add(new InputHandler());
 
             MelonModLogger.Log("=========== KEYBINDS ==============");
+            MelonModLogger.Log("F9  - Clone Selected Avatar");
             MelonModLogger.Log("F10 - Enable/Disable Flight");
             MelonModLogger.Log("F11 - Enable/Disable Selected ESP");
-            MelonModLogger.Log("===================================");
+            MelonModLogger.Log("==================================="); 
         }
         public override void VRChat_OnUiManagerInit()
         {

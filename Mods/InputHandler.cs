@@ -1,4 +1,5 @@
-﻿using MelonLoader;
+﻿using BestHTTP;
+using MelonLoader;
 using NET_SDK;
 using Notorious;
 using QoL.Utils;
@@ -9,7 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using VRC;
+using VRC.Core;
 using VRC.SDKBase;
+using VRC.UI;
 
 namespace QoL.Mods
 {
@@ -27,11 +30,25 @@ namespace QoL.Mods
 
         public override void OnUpdate()
         {
-            if (PlayerWrappers.GetCurrentPlayer() != null)
+
+            if (Input.GetKeyDown(KeyCode.F9))
             {
-                if (PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>() != null)
+                var avi = Wrappers.GetQuickMenu().GetSelectedPlayer().field_VRCPlayer_0.prop_ApiAvatar_0;
+
+                if (avi.releaseStatus != "private")
                 {
-                    PlayerWrappers.GetCurrentPlayer().gameObject.AddComponent<PlayerModComponentJump>();
+                    VRC.Core.API.SendRequest($"avatars/{avi.id}", VRC.Core.BestHTTP.HTTPMethods.Get, new ApiModelContainer<ApiAvatar>(), null, true, false, 3600f, 2, null);
+
+                    new PageAvatar
+                    {
+                        avatar = new SimpleAvatarPedestal
+                        {
+                            field_ApiAvatar_0 = new ApiAvatar
+                            {
+                                id = avi.id
+                            }
+                        }
+                    }.ChangeToSelectedAvatar();
                 }
             }
 
@@ -76,7 +93,7 @@ namespace QoL.Mods
 
                 if (Input.GetKey(KeyCode.W))
                 {
-                   player.transform.position += gameObject.transform.forward * currentSpeed * Time.deltaTime;
+                    player.transform.position += gameObject.transform.forward * currentSpeed * Time.deltaTime;
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
@@ -101,37 +118,6 @@ namespace QoL.Mods
                 if (Math.Abs(Input.GetAxis("Joy1 Axis 1")) > 0f)
                 {
                     player.transform.position += gameObject.transform.right * currentSpeed * Time.deltaTime * Input.GetAxis("Joy1 Axis 1");
-                }
-            }
-
-            if (GlobalUtils.ForceClone)
-            {
-                if (UnityEngine.Object.FindObjectOfType<UserInteractMenu>() != null)
-                {
-                    if (CachedUserInteract == null) CachedUserInteract = UnityEngine.Object.FindObjectOfType<UserInteractMenu>();
-
-                    if (CachedUserInteract.menuController.activeUser != null)
-                    {
-                        if (CachedUserInteract.menuController.activeAvatar.releaseStatus == "private")
-                        {
-                            CachedUserInteract.cloneAvatarButtonText.color = Color.red;
-                            CachedUserInteract.cloneAvatarButtonText.text = "Private\nAvatar";
-                            CachedUserInteract.menuController.activeUser.allowAvatarCopying = false;
-                            CachedUserInteract.cloneAvatarButton.interactable = false;
-                        }
-                        else if (!CachedUserInteract.menuController.activeUser.allowAvatarCopying)
-                        {
-                            CachedUserInteract.cloneAvatarButtonText.color = Color.cyan;
-                            CachedUserInteract.cloneAvatarButtonText.text = "Force\nClone";
-                            CachedUserInteract.menuController.activeUser.allowAvatarCopying = true;
-                            CachedUserInteract.cloneAvatarButton.interactable = true;
-                        }
-                        else
-                        {
-                            CachedUserInteract.cloneAvatarButtonText.color = Color.white;
-                            CachedUserInteract.cloneAvatarButtonText.text = "Clone\nAvatar";
-                        }
-                    }
                 }
             }
         }

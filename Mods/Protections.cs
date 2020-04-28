@@ -36,7 +36,7 @@ namespace QoL.Mods
                 var moderationManager = SDK.GetClass("", "ModerationManager");
                 HarmonyInstance.Patch(API.GetMethod("DeviceID"), AccessTools.Method(typeof(Protections), "HWIDSpoofer"));
                 HarmonyInstance.Patch(Amp.GetMethod("InitializeDeviceId"), AccessTools.Method(typeof(Protections), "HWIDSpoofer"));
-                HarmonyInstance.Patch(Photon.GetMethod("Method_Public_Type1595182416_Type2348106871_2"), AccessTools.Method(typeof(Protections), "SerializeView")); //Last function to take class, struct parameters only.
+                //HarmonyInstance.Patch(Photon.GetMethod("Method_Public_Type1595182416_Type2348106871_2"), AccessTools.Method(typeof(Protections), "SerializeView")); //Last function to take class, struct parameters only.
 
             }
             catch (Exception e)

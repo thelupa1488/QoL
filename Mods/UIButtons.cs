@@ -114,14 +114,28 @@ namespace QoL.Mods
                             MelonModLogger.Log($"Custom Serialisation has been Disabled.");
                         }));
 
-                        var ForceCloneButton = ButtonAPI.CreateButton(ButtonType.Toggle, "Force Clone", "Enable/disable force clone", Color.white, Color.blue, -2, -1, parent, new Action(() =>
+                        var ForceCloneButton = ButtonAPI.CreateButton(ButtonType.Toggle, "Jump", "Enable/disable jumping in the current world", Color.white, Color.blue, -2, -1, parent, new Action(() =>
                         {
-                            GlobalUtils.ForceClone = true;
-                            MelonModLogger.Log($"Force Clone has been Enabled.");
+                            if (PlayerWrappers.GetCurrentPlayer() != null)
+                            {
+                                if (PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>() == null)
+                                {
+                                    PlayerWrappers.GetCurrentPlayer().gameObject.AddComponent<PlayerModComponentJump>();
+                                }
+                            }
+
+                            MelonModLogger.Log($"Jumping has been Enabled.");
                         }), new Action(() =>
                         {
-                            GlobalUtils.ForceClone = false;
-                            MelonModLogger.Log($"Force Clone has been Disabled.");
+                            if (PlayerWrappers.GetCurrentPlayer() != null)
+                            {
+                                if (PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>() != null)
+                                {
+                                    UnityEngine.GameObject.Destroy(PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>());
+                                }
+                            }
+
+                            MelonModLogger.Log($"Jumping has been Disabled.");
                         }));
 
                         Buttons.Add(Flightbutton.gameObject);
