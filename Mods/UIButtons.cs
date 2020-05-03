@@ -128,6 +128,7 @@ namespace QoL.Mods
                                 {
                                     PlayerWrappers.GetCurrentPlayer().gameObject.AddComponent<PlayerModComponentJump>();
                                 }
+                                else PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>().enabled = true;
                             }
 
                             MelonModLogger.Log($"Jumping has been Enabled.");
@@ -137,7 +138,7 @@ namespace QoL.Mods
                             {
                                 if (PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>() != null)
                                 {
-                                    UnityEngine.GameObject.Destroy(PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>().gameObject);
+                                    PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>().enabled = false;
                                 }
                             }
 
