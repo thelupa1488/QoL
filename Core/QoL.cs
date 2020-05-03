@@ -6,6 +6,7 @@ using Notorious;
 using Notorious.API;
 using QoL.API;
 using QoL.Mods;
+using QoL.Settings;
 using QoL.Utils;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ namespace QoL
         public static List<VRCMod> Modules = new List<VRCMod>();
         public override void OnApplicationStart()
         {
+            Configuration.LoadConfiguration();
+
             Modules.Add(new Protections());
             Modules.Add(new UIButtons());
             Modules.Add(new InputHandler());
@@ -36,7 +39,7 @@ namespace QoL
             MelonModLogger.Log("F9  - Clone Selected Avatar");
             MelonModLogger.Log("F10 - Enable/Disable Flight");
             MelonModLogger.Log("F11 - Enable/Disable Selected ESP");
-            MelonModLogger.Log("==================================="); 
+            MelonModLogger.Log("===================================");  
         }
         public override void VRChat_OnUiManagerInit()
         {
@@ -44,7 +47,8 @@ namespace QoL
         }
         public override void OnUpdate()
         {
-            Modules.Find(x => x.Name == "Input Handler").OnUpdate();
+            List<VRCMod> Mods = Modules.Where(x => x.Name == "Input Handler" || x.Name == "UI Buttons").ToList();
+            Mods.ForEach(x => x.OnUpdate());
         }
     }
 }

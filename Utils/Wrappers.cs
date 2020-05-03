@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExitGames.Client.Photon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -60,6 +61,21 @@ namespace Notorious
         {
             var gameObject = RayCast.transform.gameObject;
             return GetPlayer(Wrappers.GetPlayerManager(), VRCPlayerApi.GetPlayerByGameObject(gameObject).playerId);
+        }
+
+        public static ulong GetSteamID(this VRCPlayer player)
+        {
+            return player.field_UInt64_0;
+        }
+
+        public static Type1372373702 GetPhotonPlayer(this Player player)
+        {
+            return player.prop_Type1372373702_0;
+        }
+
+        public static Hashtable GetHashtable(this Type1372373702 photonPlayer)
+        {
+            return photonPlayer.prop_Hashtable_0;
         }
     }
     public static class Wrappers

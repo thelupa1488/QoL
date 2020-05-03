@@ -11,6 +11,12 @@ using QoL.Utils;
 using QoL.API;
 using VRC.SDKBase;
 using Photon.Pun;
+using UnityEngine.UI;
+using QoL.Settings;
+using VRC.Core;
+using VRC.Core.BestHTTP;
+using VRC;
+using VRC.UI;
 
 namespace QoL.Mods
 {
@@ -114,7 +120,7 @@ namespace QoL.Mods
                             MelonModLogger.Log($"Custom Serialisation has been Disabled.");
                         }));
 
-                        var ForceCloneButton = ButtonAPI.CreateButton(ButtonType.Toggle, "Jump", "Enable/disable jumping in the current world", Color.white, Color.blue, -2, -1, parent, new Action(() =>
+                        var JumpButton = ButtonAPI.CreateButton(ButtonType.Toggle, "Jump", "Enable/disable jumping in the current world", Color.white, Color.blue, -2, -1, parent, new Action(() =>
                         {
                             if (PlayerWrappers.GetCurrentPlayer() != null)
                             {
@@ -131,18 +137,44 @@ namespace QoL.Mods
                             {
                                 if (PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>() != null)
                                 {
-                                    UnityEngine.GameObject.Destroy(PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>());
+                                    UnityEngine.GameObject.Destroy(PlayerWrappers.GetCurrentPlayer().GetComponent<PlayerModComponentJump>().gameObject);
                                 }
                             }
 
                             MelonModLogger.Log($"Jumping has been Disabled.");
                         }));
 
+                        var CloneButton = ButtonAPI.CreateButton(ButtonType.Default, "Clone\nBy\nID", "Clone an avatar by it's ID", Color.white, Color.blue, -1, 1, parent, new Action(() =>
+                        {
+                            MelonModLogger.Log("Enter AvatarID: ");
+                            string ID = Console.ReadLine();
+                            VRC.Core.API.SendRequest($"avatars/{ID}", HTTPMethods.Get, new ApiModelContainer<ApiAvatar>(), null, true, true, 3600f, 2, null);
+                            new PageAvatar
+                            {
+                                avatar = new SimpleAvatarPedestal
+                                {
+                                    field_ApiAvatar_0 = new ApiAvatar
+                                    {
+                                        id = ID
+                                    }
+                                }
+                            }.ChangeToSelectedAvatar();
+                            Resources.FindObjectsOfTypeAll<VRCUiPopupManager>()[0].Method_Public_String_String_Single_0("<color=cyan>Success!</color>", "<color=green>Successfully cloned that avatar by It's AvtrID.</color>", 10f);
+                        }), null);
+
+                        var GotoButton = ButtonAPI.CreateButton(ButtonType.Default, "Join\nBy\nID", "Goto a world by It's ID", Color.white, Color.blue, 0, 1, parent, new Action(() =>
+                        {
+                            MelonModLogger.Log("Enter WorldID: ");
+                            string ID = Console.ReadLine();
+                            Networking.GoToRoom(ID);
+                        }), null);
+
                         Buttons.Add(Flightbutton.gameObject);
                         Buttons.Add(ESPbutton.gameObject);
                         Buttons.Add(teleportButton.gameObject);
                         Buttons.Add(Freezebutton.gameObject);
-                        Buttons.Add(ForceCloneButton.gameObject);
+                        Buttons.Add(JumpButton.gameObject);
+                        Buttons.Add(CloneButton.gameObject);
                     }
                 }
             }
@@ -173,7 +205,24 @@ namespace QoL.Mods
         }
         public override void OnUpdate()
         {
+            //var AvatarScreen = Wrappers.GetQuickMenu().transform.Find("/UserInterface/MenuContent/Screens/Avatar");
 
+            //if (AvatarScreen != null)
+            //{
+            //    var FavButton = AvatarScreen.GetComponentsInChildren<Button>().Where(x => x.name.ToLower().Contains("favorite")).ToList();
+
+            //    if (FavButton.Count() > 0)
+            //    {
+            //        FavButton.FirstOrDefault().GetComponentInChildren<Text>().text = "Favorite";
+            //        FavButton.FirstOrDefault().GetComponentInChildren<Text>().color = Color.cyan;
+            //        FavButton.FirstOrDefault().onClick = new Button.ButtonClickedEvent();
+            //        FavButton.FirstOrDefault().onClick.AddListener(new Action(() =>
+            //        {
+            //            UiAvatarList.Method_Public_AvatarFavorites_0(VRC.Core.APIUser.AvatarFavorites.Avatars_1);
+            //            UiAvatarList.Method_Public_AvatarFavorites_1(VRC.Core.APIUser.AvatarFavorites.MAX_AVATAR_FAVORITE_GROUPS);
+            //        }));
+            //    }
+            //}
         }
     }
 }

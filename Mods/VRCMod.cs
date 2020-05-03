@@ -21,15 +21,15 @@ namespace QoL.Mods
 
         public virtual void OnStart()
         {
-            new Thread(() =>
-            {
-                for(; ;)
-                {
-                    Thread.Sleep(15000);
-                    OnUpdate();
-                }
-            })
-            { IsBackground = true }.Start();
+            //new Thread(() =>
+            //{
+            //    for(; ;)
+            //    {
+            //        Thread.Sleep(15000);
+            //        OnUpdate();
+            //    }
+            //})
+            //{ IsBackground = true }.Start();
         }
 
         public virtual void OnUpdate()
